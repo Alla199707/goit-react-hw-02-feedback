@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Section from './Section/Section';
-import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+import FeedbackOptions from './FeedbackOptions/FeedbackOptions';
+import Statistics from './Statistics/Statistics';
 
 export class App extends Component {
   state = {
@@ -9,19 +10,33 @@ export class App extends Component {
     bad: 0,
   };
 
-  static defaultProps = {};
+  onLeaveFeedback = value => {
+    this.setState(prevState => ({ [value]: prevState[value] + 1 }));
+  };
 
-  static propTypes = {};
+  static countTotalFeedback = {};
+
+  static countPositiveFeedbackPercentage = {};
 
   render() {
-    const names = Object.keys(this.state);
-    console.log(names);
+    const { good, neutral, bad } = this.state;
     return (
       <div>
         <Section title={'Please leave feedback'}>
-          <FeedbackOptions options={names} />
+          <FeedbackOptions
+            options={Object.keys(this.state)}
+            onLeaveFeedback={this.onLeaveFeedback}
+          />
         </Section>
-        <Section title={'Statistic'}></Section>
+        <Section title={'Statistic'}>
+          <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            total={this.countTotalFeedback}
+            positivePercentage={this.positivePercentage}
+          ></Statistics>
+        </Section>
       </div>
     );
   }
